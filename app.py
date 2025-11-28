@@ -13,7 +13,7 @@ pdk.settings.mapbox_api_key = MAPBOX_TOKEN
 ICON_URL = "https://raw.githubusercontent.com/fabianopassos50-png/micropower-icons/main/micropower_icon_transparent_128.png"
 
 # Caminho padrão do Excel dentro do repositório
-EXCEL_PATH = "BASE DE DADOS - Instalação 4 (1).xlsx"
+EXCEL_PATH = "base.xlsx"
 
 
 # ==================================================
