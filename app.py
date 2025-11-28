@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -10,6 +11,9 @@ MAPBOX_TOKEN = "pk.eyJ1IjoiZnBhc3NvczEwIiwiYSI6ImNtaWZ3ZDMyMjAwbmszZW4ybnI5dGlja
 pdk.settings.mapbox_api_key = MAPBOX_TOKEN
 
 ICON_URL = "https://raw.githubusercontent.com/fabianopassos50-png/micropower-icons/main/micropower_icon_transparent_128.png"
+
+# Caminho padrão do Excel dentro do repositório
+EXCEL_PATH = "BASE DE DADOS - Instalação 4 (1).xlsx"
 
 
 # ==================================================
@@ -181,17 +185,27 @@ def carregar_dados(arquivo):
 
 
 # ==================================================
-# UPLOAD E BARRA LATERAL
+# CARREGAR BASE PADRÃO (sem upload)
 # ==================================================
 with st.sidebar:
     st.subheader("Configuração da base")
-    arquivo = st.file_uploader("Selecione a planilha (.xlsx)", type=["xlsx"])
+    if os.path.exists(EXCEL_PATH):
+        st.caption(f"Usando arquivo padrão: `{EXCEL_PATH}`")
+    else:
+        st.warning(
+            f"Arquivo padrão `{EXCEL_PATH}` não encontrado no repositório. "
+            "Faça upload manual de uma planilha abaixo."
+        )
 
-if not arquivo:
-    st.info("Carregue a planilha consolidada de projetos para visualizar o painel.")
-    st.stop()
+# Se o arquivo padrão existir, usa ele. Caso contrário, libera upload como plano B.
+if os.path.exists(EXCEL_PATH):
+    df = carregar_dados(EXCEL_PATH)
+else:
+    arquivo = st.sidebar.file_uploader("Selecione a planilha (.xlsx)", type=["xlsx"])
+    if not arquivo:
+        st.stop()
+    df = carregar_dados(arquivo)
 
-df = carregar_dados(arquivo)
 
 # --------------------------------------------------
 # FILTROS
@@ -501,7 +515,6 @@ with tab_exec:
     )
 
     if exec_full:
-        # Mapa máximo + faixa lateral bem estreita
         col_map, col_info = st.columns([8, 1])
 
         with col_map:
